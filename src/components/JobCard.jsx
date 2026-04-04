@@ -27,15 +27,14 @@ import styles from "../pages/joblist/Joblist.module.css";
 const JobCard = ({ id, title, company, experience, skills, salary, img }) => {
 
   const handleApply = () => {
-  if (!window.isWasmReady) {
-    console.log("⏳ Wait... WASM loading");
+  if (!window.SplayReady) {
+    console.log("Still loading... try again ⏳");
     return;
   }
 
-  window.Module.ccall("insertNode", null, ["number"], [id]);
-  console.log("✅ Inserted:", id);
+  window.Splay.ccall("accessJob", null, ["number"], [id]);
+  console.log("clicked:", id);
 };
-
   return (
     <div className={styles.jobCard}>
       <img src={img} alt={title} width="60" />

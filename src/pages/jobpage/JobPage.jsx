@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import googleImg from "../../assets/google.png";
 import amazonImg from "../../assets/amazon.png";
@@ -16,28 +17,28 @@ import accentureImg from "../../assets/acc2.png";
 import metaImg from "../../assets/meta.png";
 import "./JobPage.css";
 
-
 function parseSalary(str) {
   return parseInt(str.replace(/[$,]/g, ""));
 }
 
 function JobPage() {
-
   const [Module, setModule] = useState(null);
   const [filtered, setFiltered] = useState([]);
 
+  // 🔥 Load Heap WASM
   useEffect(() => {
-  const script = document.createElement("script");
-  script.src = "/heap.js";
+    const script = document.createElement("script");
+    script.src = "/heap.js";
 
-  script.onload = async () => {
-    const heap = await window.HeapModule(); 
+    script.onload = async () => {
+      const heap = await window.HeapModule();
+      setModule(heap);
+      console.log("Heap ready 🚀");
+    };
 
-    setModule(heap);
-  };
+    document.body.appendChild(script);
+  }, []);
 
-  document.body.appendChild(script);
-}, []);
   // ================= CORE =================
 
   function extractAll() {
@@ -69,7 +70,6 @@ function JobPage() {
 
     loadJobsToCpp();
     Module.ccall("buildHighHeap");
-
     extractAll();
   }
 
@@ -77,13 +77,8 @@ function JobPage() {
     if (!Module) return;
 
     loadJobsToCpp();
-
-    // build only low
     Module.ccall("buildLowHeap");
-
-    // 🔥 FIX: move low heap → high heap
-    Module.ccall("mergeHeaps");
-
+    Module.ccall("mergeHeaps"); // important
     extractAll();
   }
 
@@ -91,11 +86,9 @@ function JobPage() {
     if (!Module) return;
 
     loadJobsToCpp();
-
     Module.ccall("buildHighHeap");
     Module.ccall("buildLowHeap");
     Module.ccall("mergeHeaps");
-
     extractAll();
   }
 
@@ -109,28 +102,30 @@ function JobPage() {
     { id: 5, title: "Cloud Engineer", company: "Oracle", rating: 4.7, salary: "$110,000", img: oracleImg },
     { id: 6, title: "ML Engineer", company: "OpenAI", rating: 4.9, salary: "$120,000", img: openaiImg },
     { id: 7, title: "Full Stack Developer", company: "Meta", rating: 4.7, salary: "$105,000", img: metaImg },
-  { id: 8, title: "DevOps Engineer", company: "Netflix", rating: 4.8, salary: "$115,000", img: netflixImg },
-  { id: 9, title: "Cybersecurity Analyst", company: "Cisco", rating: 4.6, salary: "$102,000", img: ciscoImg },
-  { id: 10, title: "Mobile App Developer", company: "Apple", rating: 4.7, salary: "$108,000", img: appleImg },
-  { id: 11, title: "AI Researcher", company: "NVIDIA", rating: 4.9, salary: "$125,000", img: nvidiaImg },
-  { id: 12, title: "System Engineer", company: "IBM", rating: 4.3, salary: "$90,000", img: ibmImg },
-  { id: 13, title: "Blockchain Developer", company: "Coinbase", rating: 4.5, salary: "$112,000", img: coinbaseImg },
-  { id: 14, title: "Product Manager", company: "Uber", rating: 4.6, salary: "$118,000", img: uberImg },
-  { id: 15, title: "Software Tester (QA)", company: "Accenture", rating: 4.2, salary: "$78,000", img: accentureImg }
+    { id: 8, title: "DevOps Engineer", company: "Netflix", rating: 4.8, salary: "$115,000", img: netflixImg },
+    { id: 9, title: "Cybersecurity Analyst", company: "Cisco", rating: 4.6, salary: "$102,000", img: ciscoImg },
+    { id: 10, title: "Mobile App Developer", company: "Apple", rating: 4.7, salary: "$108,000", img: appleImg },
+    { id: 11, title: "AI Researcher", company: "NVIDIA", rating: 4.9, salary: "$125,000", img: nvidiaImg },
+    { id: 12, title: "System Engineer", company: "IBM", rating: 4.3, salary: "$90,000", img: ibmImg },
+    { id: 13, title: "Blockchain Developer", company: "Coinbase", rating: 4.5, salary: "$112,000", img: coinbaseImg },
+    { id: 14, title: "Product Manager", company: "Uber", rating: 4.6, salary: "$118,000", img: uberImg },
+    { id: 15, title: "Software Tester (QA)", company: "Accenture", rating: 4.2, salary: "$78,000", img: accentureImg }
   ];
 
-  // preserve heap order
+  // 🔥 SAFE MAPPING (FIXED)
   const displayJobs =
     filtered.length > 0
-      ? filtered.map((salary) =>
-          jobs.find((job) => parseSalary(job.salary) === salary)
-        )
+      ? filtered
+          .map((salary) =>
+            jobs.find((job) => parseSalary(job.salary) === salary)
+          )
+          .filter(Boolean)
       : jobs;
 
   return (
     <div className="job-page">
 
-      {/* NAVBAR (RESTORED) */}
+      {/* NAVBAR */}
       <div className="job-navbar">
         <h2 className="job-logo">Job Recommendation System</h2>
 
@@ -141,7 +136,7 @@ function JobPage() {
         </div>
       </div>
 
-      {/* HERO (RESTORED FULLY) */}
+      {/* HERO */}
       <div className="job-hero">
 
         <div className="hero-left">
