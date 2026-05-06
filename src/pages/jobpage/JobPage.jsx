@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import googleImg from "../../assets/google.png";
 import amazonImg from "../../assets/amazon.png";
 import adobeImg from "../../assets/adobe.png";
@@ -22,10 +23,10 @@ function parseSalary(str) {
 }
 
 function JobPage() {
+  const navigate = useNavigate();
   const [Module, setModule] = useState(null);
   const [filtered, setFiltered] = useState([]);
 
-  // 🔥 Load Heap WASM
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "/heap.js";
@@ -38,8 +39,6 @@ function JobPage() {
 
     document.body.appendChild(script);
   }, []);
-
-  // ================= CORE =================
 
   function extractAll() {
     const result = [];
@@ -78,7 +77,7 @@ function JobPage() {
 
     loadJobsToCpp();
     Module.ccall("buildLowHeap");
-    Module.ccall("mergeHeaps"); // important
+    Module.ccall("mergeHeaps"); 
     extractAll();
   }
 
@@ -91,8 +90,6 @@ function JobPage() {
     Module.ccall("mergeHeaps");
     extractAll();
   }
-
-  // ================= DATA =================
 
   const jobs = [
     { id: 1, title: "Frontend Developer", company: "Google", rating: 4.8, salary: "$95,000", img: googleImg },
@@ -112,7 +109,6 @@ function JobPage() {
     { id: 15, title: "Software Tester (QA)", company: "Accenture", rating: 4.2, salary: "$78,000", img: accentureImg }
   ];
 
-  // 🔥 SAFE MAPPING (FIXED)
   const displayJobs =
     filtered.length > 0
       ? filtered
@@ -125,18 +121,16 @@ function JobPage() {
   return (
     <div className="job-page">
 
-      {/* NAVBAR */}
       <div className="job-navbar">
         <h2 className="job-logo">Job Recommendation System</h2>
 
         <div className="job-nav-buttons">
-          <button className="job-btn-outline">Search</button>
+          <button className="job-btn-outline" onClick={() => navigate("/jobs")}>Search</button>
           <button className="job-btn-outline">Recent Jobs</button>
           <button className="job-btn-fill">Sign Out</button>
         </div>
       </div>
 
-      {/* HERO */}
       <div className="job-hero">
 
         <div className="hero-left">
@@ -168,7 +162,6 @@ function JobPage() {
         </div>
       </div>
 
-      {/* JOB LIST */}
       <div className="job-card-container">
         {displayJobs.map((job) => (
           <div className="job-card" key={job.id}>

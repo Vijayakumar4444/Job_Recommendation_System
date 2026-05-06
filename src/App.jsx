@@ -9,7 +9,7 @@ function App() {
     if (window.SplayModule) {
       window.SplayModule().then((mod) => {
         window.Splay = mod;
-        window.SplayReady = true;   // 🔥 KEY FLAG
+        window.SplayReady = true;
         console.log("Splay fully ready 🚀");
       });
     }

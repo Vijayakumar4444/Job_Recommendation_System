@@ -2,7 +2,6 @@
 #include <map>
 #include <vector>
 #include <cctype>
-#include <emscripten.h>
 
 using namespace std;
 
@@ -13,7 +12,6 @@ struct Node {
 
 Node* root = new Node();
 
-// ---------------- INSERT ----------------
 extern "C" {
 
 EMSCRIPTEN_KEEPALIVE
@@ -33,7 +31,6 @@ void insertWord(const char* word, int jobId) {
     node->jobIds.push_back(jobId);
 }
 
-// ---------------- MULTI SEARCH ----------------
 EMSCRIPTEN_KEEPALIVE
 int* searchAll(const char* word, int* size) {
 
@@ -54,7 +51,6 @@ int* searchAll(const char* word, int* size) {
     return node->jobIds.data();
 }
 
-// ---------------- AUTOCOMPLETE ----------------
 vector<string> suggestions;
 
 void dfs(Node* node, string current) {

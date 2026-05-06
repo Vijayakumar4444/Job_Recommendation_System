@@ -8,7 +8,7 @@ class SplayTree {
 private:
     struct Node {
         T element;
-        int freq;   // 🔥 NEW
+        int freq;   
         Node *left, *right;
 
         Node(T val, Node* l=nullptr, Node* r=nullptr)
@@ -18,7 +18,7 @@ private:
     Node* root;
     Node* nullNode;
 
-    // Rotations
+    
     void rotateLeft(Node* &k2){
         Node* k1 = k2->right;
         k2->right = k1->left;
@@ -33,7 +33,7 @@ private:
         k1 = k2;
     }
 
-    // Splay (UNCHANGED)
+    
     void splay(const T &x, Node* &t){
         static Node header(0);
         Node *LeftTreeMax, *RightTreeMin;
@@ -73,7 +73,7 @@ private:
         t->right = header.left;
     }
 
-    // 🔥 Collect nodes
+    
     void collect(Node* t, vector<pair<int,T>> &arr){
         if(t == nullNode) return;
         collect(t->left, arr);
@@ -88,7 +88,7 @@ public:
         root = nullNode;
     }
 
-    // Insert (same)
+    
     void insert(const T &x){
         static Node* newNode = nullptr;
 
@@ -121,20 +121,20 @@ public:
         newNode = nullptr;
     }
 
-    // 🔥 SEARCH = ACCESS = INCREASE FREQUENCY
+    
     bool search(const T &x){
         if(root == nullNode) return false;
 
         splay(x, root);
 
         if(root->element == x){
-            root->freq++;   // 🔥 CORE IDEA
+            root->freq++;   
             return true;
         }
         return false;
     }
 
-    // 🔥 GET TOP K FREQUENT
+    
     vector<T> getTopK(int k){
         vector<pair<int,T>> arr;
         collect(root, arr);
@@ -152,14 +152,14 @@ SplayTree<int> tree;
 
 extern "C" {
 
-// called when user searches
+
 void accessJob(int id){
     if(!tree.search(id)){
         tree.insert(id);
     }
 }
 
-// return top jobs
+
 void getTopJobs(int* result, int k){
     vector<int> top = tree.getTopK(k);
 

@@ -3,7 +3,6 @@ import JobCard from "../../components/JobCard";
 import Sidebar from "../../components/Sidebar";
 import styles from "../joblist/Joblist.module.css";
 
-// IMPORT SAME JOB LIST (important)
 import googleImg from "../../assets/google.png";
 import amazonImg from "../../assets/amazon.png";
 import adobeImg from "../../assets/adobe.png";
@@ -44,7 +43,7 @@ const Recent = () => {
 
  useEffect(() => {
   const interval = setInterval(() => {
-    if (window.SplayReady) {   // ✅ FIXED
+    if (window.SplayReady) {
       clearInterval(interval);
 
       const k = 10;
