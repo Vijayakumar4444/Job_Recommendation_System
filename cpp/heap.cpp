@@ -2,7 +2,7 @@
 #include <emscripten.h>
 using namespace std;
 
-// ================= JOB STRUCT =================
+
 struct Job {
     int id;
     int salary;
@@ -14,7 +14,7 @@ struct Job {
     }
 };
 
-// ================= YOUR LEFTIST HEAP (UNCHANGED) =================
+
 template <typename T>
 class LeftistHeap {
 private:
@@ -110,15 +110,15 @@ private:
     }
 };
 
-// ================= GLOBAL DATA =================
+
 LeftistHeap<Job> heapHigh;
 LeftistHeap<Job> heapLow;
 vector<Job> jobs;
 
-// ================= EXPORTED FUNCTIONS =================
+
 extern "C" {
 
-// Reset everything
+
 EMSCRIPTEN_KEEPALIVE
 void clearJobs() {
     jobs.clear();
@@ -126,13 +126,13 @@ void clearJobs() {
     heapLow.makeEmpty();
 }
 
-// Add job from React
+
 EMSCRIPTEN_KEEPALIVE
 void addJob(int id, int salary) {
     jobs.push_back(Job(id, salary));
 }
 
-// Build heap for salary > 100k
+
 EMSCRIPTEN_KEEPALIVE
 void buildHighHeap() {
     heapHigh.makeEmpty();
@@ -143,7 +143,7 @@ void buildHighHeap() {
     }
 }
 
-// Build heap for salary <= 100k
+
 EMSCRIPTEN_KEEPALIVE
 void buildLowHeap() {
     heapLow.makeEmpty();
@@ -154,13 +154,13 @@ void buildLowHeap() {
     }
 }
 
-// Merge both heaps
+
 EMSCRIPTEN_KEEPALIVE
 void mergeHeaps() {
     heapHigh.mergeWith(heapLow);
 }
 
-// Extract max salary
+
 EMSCRIPTEN_KEEPALIVE
 int extractMaxSalary() {
     if (heapHigh.isEmpty()) return -1;
